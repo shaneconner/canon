@@ -2,7 +2,7 @@ cff-version: 1.2.0
 title: pi-canon
 message: >-
   If you use this software or its measurements, please cite the paper that
-  covers the part you used. The three are listed under references below.
+  covers the part you used. The four are listed under references below.
 type: software
 authors:
   - family-names: Conner
@@ -59,3 +59,15 @@ references:
       What gets written down and whether it stays true. Writers left superseded
       values standing in records whose contract is to state what is true now. A
       direction that survived three captures and a magnitude that did not.
+  - type: article
+    title: "pi-canon: A Durable Fit"
+    authors:
+      - family-names: Conner
+        given-names: Shane
+    doi: 10.5281/zenodo.22087390
+    year: 2026
+    notes: >-
+      Who decides what leaves the context window. Six preregistered studies of
+      context withdrawal; under a disclosed ephemeral default the model kept
+      every consulted result, and the durable-by-default design stands
+      validated. The line's closing paper.
