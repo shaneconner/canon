@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const source = join(root, "extensions", "lib");
 const targets = [
-  join(root, "plugins", "pi-canon", "core"),
+  join(root, "plugins", "canon", "core"),
   join(root, "dsh-canon", "src", "core"),
 ];
 const files = ["lint.ts", "retrieval.ts", "schema.ts", "store.ts", "surfacing.ts", "tool.ts"];

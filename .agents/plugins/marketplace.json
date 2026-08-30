@@ -8,7 +8,7 @@
       "name": "canon",
       "source": {
         "source": "local",
-        "path": "./plugins/pi-canon"
+        "path": "./plugins/canon"
       },
       "policy": {
         "installation": "AVAILABLE",

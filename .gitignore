@@ -5,7 +5,7 @@ node_modules/
 AGENTS.md
 CLAUDE.md
 .mcp.json
-!plugins/pi-canon/.mcp.json
+!plugins/canon/.mcp.json
 .claude/
 lab/
 .canon/

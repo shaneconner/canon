@@ -1835,7 +1835,7 @@ pass("search says what it truncated instead of implying it returned everything")
 /* --- Codex and Claude Code plugin ------------------------------------------------
    Marketplace installers copy one plugin directory, so its core mirror must remain
    byte-identical to the implementation Pi loads. */
-const pluginRoot = join(projectRoot, "plugins/pi-canon");
+const pluginRoot = join(projectRoot, "plugins/canon");
 for (const file of ["lint.ts", "retrieval.ts", "store.ts", "surfacing.ts", "tool.ts"]) {
   assert.equal(
     readFileSync(join(pluginRoot, "core", file), "utf8"),
@@ -1906,8 +1906,8 @@ const codexMarketplace = JSON.parse(
 const claudeMarketplace = JSON.parse(
   readFileSync(join(projectRoot, ".claude-plugin/marketplace.json"), "utf8"),
 );
-assert.equal(codexMarketplace.plugins[0].source.path, "./plugins/pi-canon");
-assert.equal(claudeMarketplace.plugins[0].source, "./plugins/pi-canon");
+assert.equal(codexMarketplace.plugins[0].source.path, "./plugins/canon");
+assert.equal(claudeMarketplace.plugins[0].source, "./plugins/canon");
 pass("the same repository is a valid marketplace root for both harnesses");
 
 const mcpDir = mkdtempSync(join(tmpdir(), "pi-canon-mcp-"));

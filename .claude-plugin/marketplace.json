@@ -15,7 +15,7 @@
         "email": "shanepatrickconner@gmail.com"
       },
       "category": "productivity",
-      "source": "./plugins/pi-canon",
+      "source": "./plugins/canon",
       "homepage": "https://github.com/shaneconner/canon"
     }
   ]
