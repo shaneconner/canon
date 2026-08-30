@@ -40,7 +40,15 @@ claude plugin install canon@canon --scope user
 
 Again, an absolute checkout path works for local development. Start a new Claude Code session after installing or updating it.
 
-Both plugins launch the same dependency-free MCP server and expose the same `canon` actions as Pi. Codex surfaces after each tool result. Claude Code deduplicates one capsule packet across each parallel tool batch, immediately before the next model request, which avoids repeated message framing without delaying the agent's next decision. Both give one write-after reminder before the agent stops. An article surfaces at most once per compaction cycle: a compact starts a new cycle, while resuming the same uncompacted session does not. One session may contain several compaction cycles. Compaction discards prior touch state and replays nothing. After it, only a fresh tool-input path can surface that asset's exact or nearest-ancestor article; children and unrelated articles do not ride along. The hooks are inert in projects without `.canon/articles`, and they never create a store merely because a session opened. Review and approve the plugin hooks when the client asks. Journal entries written through the MCP server carry explicit `harness` provenance and a session identifier when the client exposes one.
+### DeepSeek Harness
+
+```sh
+dsh plugin --profile <name> add dsh-canon
+```
+
+Published separately on npm as `dsh-canon`, built from the same mirrored core. That build ships without the retriever and without the settings screen.
+
+The Codex and Claude Code plugins launch the same dependency-free MCP server and expose the same `canon` actions as Pi. Codex surfaces after each tool result. Claude Code deduplicates one capsule packet across each parallel tool batch, immediately before the next model request, which avoids repeated message framing without delaying the agent's next decision. Both give one write-after reminder before the agent stops. An article surfaces at most once per compaction cycle: a compact starts a new cycle, while resuming the same uncompacted session does not. One session may contain several compaction cycles. Compaction discards prior touch state and replays nothing. After it, only a fresh tool-input path can surface that asset's exact or nearest-ancestor article; children and unrelated articles do not ride along. The hooks are inert in projects without `.canon/articles`, and they never create a store merely because a session opened. Review and approve the plugin hooks when the client asks. Journal entries written through the MCP server carry explicit `harness` provenance and a session identifier when the client exposes one.
 
 ## Defaults
 
