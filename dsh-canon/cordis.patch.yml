@@ -1,0 +1,8 @@
+# Registers canon as a profile layer. The tool is named `canon` so the
+# self-recognition guard in the shared core matches it (`canon`, or any id
+# ending `__canon`).
+
+- insert:
+    - id: canon
+      name: 'dsh-canon'
+      inject: [tools]

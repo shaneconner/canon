@@ -1,0 +1,55 @@
+{
+  "name": "dsh-canon",
+  "version": "0.1.0",
+  "description": "Canonical project memory for DeepSeek Harness: one governing article per asset, an append-only journal beneath it.",
+  "keywords": [
+    "dsh-plugin",
+    "dsh",
+    "memory",
+    "agent-memory",
+    "knowledge",
+    "context-engineering"
+  ],
+  "type": "module",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "src",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "author": "Shane Conner",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shaneconner/canon.git",
+    "directory": "dsh-canon"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/dsh-tools": "*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noCheck",
+    "check": "tsc -p tsconfig.json --noEmit 2>&1 | grep \"^src/index\\\\.ts\" && exit 1 || exit 0",
+    "prepack": "npm run check && npm run build"
+  },
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  }
+}
