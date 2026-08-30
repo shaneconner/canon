@@ -1832,18 +1832,37 @@ assert.match(cappedSearch.content[0].text, /more matched; narrow the query/,
   "the cap announces how many it dropped");
 pass("search says what it truncated instead of implying it returned everything");
 
-/* --- Codex and Claude Code plugin ------------------------------------------------
-   Marketplace installers copy one plugin directory, so its core mirror must remain
-   byte-identical to the implementation Pi loads. */
-const pluginRoot = join(projectRoot, "plugins/canon");
-for (const file of ["lint.ts", "retrieval.ts", "store.ts", "surfacing.ts", "tool.ts"]) {
-  assert.equal(
-    readFileSync(join(pluginRoot, "core", file), "utf8"),
-    readFileSync(join(projectRoot, "extensions/lib", file), "utf8"),
-    `${file} drifted; run node scripts/sync-plugin-core.mjs`,
-  );
+/* --- every generated mirror ------------------------------------------------------
+   A harness adapter must be self-contained after an installer copies only its own
+   directory, so each mirror must stay byte-identical to the implementation Pi loads.
+
+   THE TARGETS AND THE FILE LIST ARE READ OFF THE SYNC SCRIPT, never restated here.
+   Restating them is how this check silently stopped covering the whole surface: it
+   named five files where the sync writes six, leaving schema.ts unpinned, and it
+   named one target where the sync gained a second (dsh-canon/src/core, 173fa2e) that
+   nothing checked at all. Neither had drifted when this was found on 2026-08-30, but
+   a mirror nothing pins is a mirror that drifts eventually, and two runtimes each
+   running their own copy of the core is the failure this exists to refuse. */
+const syncScript = readFileSync(join(projectRoot, "scripts/sync-plugin-core.mjs"), "utf8");
+const mirrorFiles = [...(/^const files = \[(.*)\];$/m.exec(syncScript)?.[1] ?? "")
+  .matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+const mirrorTargets = [...(/^const targets = \[([\s\S]*?)^\];$/m.exec(syncScript)?.[1] ?? "")
+  .matchAll(/join\(root, ([^)]*)\)/g)]
+  .map((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((part) => part[1]));
+assert(mirrorFiles.length > 0 && mirrorTargets.length > 0,
+  "the sync script no longer declares its targets and files where this check reads them");
+for (const segments of mirrorTargets) {
+  for (const file of mirrorFiles) {
+    assert.equal(
+      readFileSync(join(projectRoot, ...segments, file), "utf8"),
+      readFileSync(join(projectRoot, "extensions/lib", file), "utf8"),
+      `${segments.join("/")}/${file} drifted; run node scripts/sync-plugin-core.mjs`,
+    );
+  }
 }
-pass("the marketplace plugin carries an exact generated mirror of the Pi core");
+pass(`every generated mirror is exact (${mirrorTargets.length} targets x ${mirrorFiles.length} files)`);
+
+const pluginRoot = join(projectRoot, "plugins/canon");
 
 const codexPlugin = JSON.parse(readFileSync(join(pluginRoot, ".codex-plugin/plugin.json"), "utf8"));
 const claudePlugin = JSON.parse(readFileSync(join(pluginRoot, ".claude-plugin/plugin.json"), "utf8"));
