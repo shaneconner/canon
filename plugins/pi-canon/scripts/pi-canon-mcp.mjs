@@ -77,7 +77,7 @@ async function handle(message) {
           tools: { listChanged: false },
           experimental: { [SANDBOX_STATE_META]: {} },
         },
-        serverInfo: { name: `pi-canon-${callerFromEnv()}`, version: "0.3.0" },
+        serverInfo: { name: `canon-${callerFromEnv()}`, version: "0.3.0" },
         instructions: canonToolDescription("none"),
       });
       return;
@@ -88,15 +88,15 @@ async function handle(message) {
     case "tools/list":
       result(id, {
         tools: [{
-          name: "pi_canon",
-          title: "pi-canon",
+          name: "canon",
+          title: "canon",
           description: canonToolDescription("none"),
           inputSchema: CANON_TOOL_PARAMETERS,
         }],
       });
       return;
     case "tools/call": {
-      if (message.params?.name !== "pi_canon") {
+      if (message.params?.name !== "canon") {
         failure(id, -32602, `Unknown tool ${JSON.stringify(message.params?.name)}.`);
         return;
       }

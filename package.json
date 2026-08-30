@@ -43,10 +43,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shaneconner/pi-canon.git"
+    "url": "git+https://github.com/shaneconner/canon.git"
   },
-  "bugs": "https://github.com/shaneconner/pi-canon/issues",
-  "homepage": "https://github.com/shaneconner/pi-canon#readme",
+  "bugs": "https://github.com/shaneconner/canon/issues",
+  "homepage": "https://github.com/shaneconner/canon#readme",
   "devDependencies": {
     "jiti": "^2.7.0"
   },

@@ -7,7 +7,7 @@ type: software
 authors:
   - family-names: Conner
     given-names: Shane
-repository-code: https://github.com/shaneconner/pi-canon
+repository-code: https://github.com/shaneconner/canon
 url: https://shaneconner.com/projects/pi-canon/
 abstract: >-
   Canonical project memory for coding agents: one mutable article per governed

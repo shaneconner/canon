@@ -339,7 +339,7 @@ assert.equal(surfRead.flush(), undefined, "a read article is present while its r
 surfRead.observe([{ role: "user", content: "that result got folded" }]);
 surfRead.collect([join(projDir, "src/feed/sync.ts")]);
 assert.match(surfRead.flush(), /src\/feed\/sync/, "and re-surfaces once the result is gone");
-pass("a pi_canon read establishes presence and expires with its own tool result");
+pass("a canon read establishes presence and expires with its own tool result");
 
 /* The case presence exists to catch, and the case a capsule mark got wrong. An article
    read in full carries the rule in its BODY; the capsule is also the text of the
@@ -1051,7 +1051,7 @@ const fakePi = {
 };
 registerPiCanon(fakePi, {});
 assert.equal(tools.length, 1);
-assert.equal(tools[0].name, "pi_canon");
+assert.equal(tools[0].name, "canon");
 assert.ok(
   handlers.tool_call && handlers.tool_result && handlers.session_start && handlers.turn_end &&
   handlers.agent_settled && handlers.context,
@@ -1074,10 +1074,10 @@ assert.equal(sent[0].opts.deliverAs, "steer");
 pass("touches stage silently; the turn flushes one steer message");
 
 for (const fn of handlers.tool_call) fn({ toolName: "read", toolCallId: "t3", input: { path: join(projDir, "src/core/config.ts") } }, ctx);
-for (const fn of handlers.tool_call) fn({ toolName: "pi_canon", toolCallId: "t4", input: { action: "read", path: "src/core/config" } }, ctx);
+for (const fn of handlers.tool_call) fn({ toolName: "canon", toolCallId: "t4", input: { action: "read", path: "src/core/config" } }, ctx);
 for (const fn of handlers.turn_end) fn({ turnIndex: 1 }, ctx);
 assert.equal(sent.length, 1);
-pass("repeat touches and pi_canon's own calls stay silent");
+pass("repeat touches and canon's own calls stay silent");
 
 for (const fn of handlers.agent_settled) fn(undefined, ctx);
 assert.equal(sent.length, 1);
@@ -1369,7 +1369,7 @@ pass("a project-relative reference into a named mount resolves in the mount's ow
 const entry = await jiti.import(join(projectRoot, "extensions/index.js"));
 const entryTools = [];
 entry.default({ on() {}, registerTool: (t) => entryTools.push(t), registerCommand() {} });
-assert.equal(entryTools[0].name, "pi_canon");
+assert.equal(entryTools[0].name, "canon");
 assert.equal(typeof entry.registerPiCanon, "function");
 pass("the package entry exposes the default and named exports pi loads");
 
@@ -1848,18 +1848,18 @@ pass("the marketplace plugin carries an exact generated mirror of the Pi core");
 const codexPlugin = JSON.parse(readFileSync(join(pluginRoot, ".codex-plugin/plugin.json"), "utf8"));
 const claudePlugin = JSON.parse(readFileSync(join(pluginRoot, ".claude-plugin/plugin.json"), "utf8"));
 const packageManifest = JSON.parse(readFileSync(join(projectRoot, "package.json"), "utf8"));
-assert.equal(codexPlugin.name, "pi-canon");
-assert.equal(claudePlugin.name, "pi-canon");
+assert.equal(codexPlugin.name, "canon");
+assert.equal(claudePlugin.name, "canon");
 assert.equal(codexPlugin.version, packageManifest.version);
 assert.equal(claudePlugin.version, packageManifest.version);
-assert.equal(codexPlugin.mcpServers["pi-canon"].args[0], "scripts/pi-canon-mcp.mjs");
-assert.equal(codexPlugin.mcpServers["pi-canon"].cwd, ".");
-assert.equal(codexPlugin.mcpServers["pi-canon"].env.PI_CANON_CALLER, "codex");
+assert.equal(codexPlugin.mcpServers["canon"].args[0], "scripts/pi-canon-mcp.mjs");
+assert.equal(codexPlugin.mcpServers["canon"].cwd, ".");
+assert.equal(codexPlugin.mcpServers["canon"].env.PI_CANON_CALLER, "codex");
 assert.equal("mcpServers" in claudePlugin, false, "Claude auto-discovers the standard MCP file once");
 const claudeMcp = JSON.parse(readFileSync(join(pluginRoot, ".mcp.json"), "utf8"));
-assert.equal(claudeMcp.mcpServers["pi-canon"].args[0],
+assert.equal(claudeMcp.mcpServers["canon"].args[0],
   "${CLAUDE_PLUGIN_ROOT}/scripts/pi-canon-mcp.mjs");
-assert.equal(claudeMcp.mcpServers["pi-canon"].env.PI_CANON_CALLER, "claude-code");
+assert.equal(claudeMcp.mcpServers["canon"].env.PI_CANON_CALLER, "claude-code");
 assert.equal("hooks" in codexPlugin, false, "Codex auto-discovers its standard hook file once");
 assert.equal(claudePlugin.hooks, "./hooks/claude.json");
 const codexHooks = JSON.parse(readFileSync(join(pluginRoot, "hooks/hooks.json"), "utf8"));
@@ -1921,10 +1921,10 @@ const mcpMessages = [
   } },
   { jsonrpc: "2.0", method: "notifications/initialized" },
   { jsonrpc: "2.0", id: 2, method: "tools/list", params: {} },
-  { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "pi_canon", _meta: mcpMeta, arguments: {
+  { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "canon", _meta: mcpMeta, arguments: {
     action: "write", path: "src/config.ts", capsule: "Env wins.", body: "Defaults, then environment.",
   } } },
-  { jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "pi_canon", _meta: mcpMeta, arguments: {
+  { jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "canon", _meta: mcpMeta, arguments: {
     action: "journal", subject: ["src/config"], slug: "mcp-gate", body: "Codex recorded limit 17.",
   } } },
 ];
@@ -1936,10 +1936,10 @@ const mcp = spawnSync(process.execPath, [join(pluginRoot, "scripts/pi-canon-mcp.
 });
 assert.equal(mcp.status, 0, mcp.stderr);
 const replies = mcp.stdout.trim().split("\n").map(JSON.parse);
-assert.equal(replies.find((r) => r.id === 1).result.serverInfo.name, "pi-canon-codex");
+assert.equal(replies.find((r) => r.id === 1).result.serverInfo.name, "canon-codex");
 assert.deepEqual(replies.find((r) => r.id === 1).result.capabilities.experimental,
   { "codex/sandbox-state-meta": {} });
-assert.equal(replies.find((r) => r.id === 2).result.tools[0].name, "pi_canon");
+assert.equal(replies.find((r) => r.id === 2).result.tools[0].name, "canon");
 assert.match(replies.find((r) => r.id === 3).result.content[0].text, /Wrote src\/config/);
 assert.match(replies.find((r) => r.id === 4).result.content[0].text, /Logged .*mcp-gate/);
 const mcpJournal = readdirSync(join(mcpDir, ".canon/journal"))[0];
@@ -1949,7 +1949,7 @@ assert.match(mcpEntry, /^session: gate-session$/m);
 const claudeMcpMessages = [
   mcpMessages[0],
   { jsonrpc: "2.0", method: "notifications/initialized" },
-  { jsonrpc: "2.0", id: 5, method: "tools/call", params: { name: "pi_canon", arguments: {
+  { jsonrpc: "2.0", id: 5, method: "tools/call", params: { name: "canon", arguments: {
     action: "read", path: "src/config",
   } } },
 ];
@@ -1961,7 +1961,7 @@ const claudeMcpRun = spawnSync(process.execPath, [join(pluginRoot, "scripts/pi-c
 });
 assert.equal(claudeMcpRun.status, 0, claudeMcpRun.stderr);
 const claudeReplies = claudeMcpRun.stdout.trim().split("\n").map(JSON.parse);
-assert.equal(claudeReplies.find((r) => r.id === 1).result.serverInfo.name, "pi-canon-claude-code");
+assert.equal(claudeReplies.find((r) => r.id === 1).result.serverInfo.name, "canon-claude-code");
 assert.match(claudeReplies.find((r) => r.id === 5).result.content[0].text, /Defaults, then environment/);
 pass("the MCP adapter resolves both Codex turn metadata and Claude's project cwd");
 
@@ -2101,7 +2101,7 @@ assert.deepEqual(runClaudeReadBatch({
   hook_event_name: "PostToolBatch",
   tool_calls: [
     { tool_name: "Read", tool_input: { file_path: "src/config.ts" } },
-    { tool_name: "mcp__pi-canon__pi_canon", tool_input: { action: "read", path: "src/config" } },
+    { tool_name: "mcp__canon__canon", tool_input: { action: "read", path: "src/config" } },
   ],
 }), {}, "a full article read in the same batch makes its capsule redundant");
 pass("the Claude hook emits one deduplicated current-cycle packet per tool batch");

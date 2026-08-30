@@ -1,11 +1,11 @@
 {
-  "name": "pi-canon",
+  "name": "canon",
   "interface": {
-    "displayName": "Pi Canon"
+    "displayName": "Canon"
   },
   "plugins": [
     {
-      "name": "pi-canon",
+      "name": "canon",
       "source": {
         "source": "local",
         "path": "./plugins/pi-canon"

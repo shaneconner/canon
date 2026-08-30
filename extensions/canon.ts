@@ -141,7 +141,7 @@ export function registerPiCanon(pi: any, options: CanonOptions = {}): void {
   /* Touches stage; turns flush. One steered message per turn rides the provider
      round trip that was happening anyway. */
   pi.on("tool_call", (event: any, ctx: any) => {
-    if (!surface || event?.toolName === "pi_canon") return;
+    if (!surface || event?.toolName === "canon") return;
     const { surfacer } = ready(ctx);
     const assets = surfacer.pathsIn(event?.input);
     surfacer.collect(assets);

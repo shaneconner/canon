@@ -5,7 +5,7 @@ description: Use canonical project memory when a project has a .canon store, or 
 
 # pi-canon
 
-Use the `pi_canon` tool as the project's durable memory surface.
+Use the `canon` tool as the project's durable memory surface.
 
 - Before relying on an existing asset, read the article at its path. Resolution will walk to the nearest governing ancestor.
 - After a real change to what is true, update the governing article. Prefer refining an existing article over creating another.

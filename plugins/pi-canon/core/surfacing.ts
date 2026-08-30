@@ -642,7 +642,7 @@ export class Surfacer {
     trace("flushed", { lines: lines.length, chars: this.stats.chars });
     return (
       `[pi-canon] Governing article${plural} for what this turn touches. Read the full article with ` +
-      `pi_canon before depending on details; update it after real changes.\n${lines.join("\n")}`
+      `canon before depending on details; update it after real changes.\n${lines.join("\n")}`
     );
   }
 
@@ -674,7 +674,7 @@ export class Surfacer {
     trace("settle-nudge", { paths: stale });
     return (
       `[pi-canon] Touched but not updated: ${stale.join(", ")}. If this work changed what is true, ` +
-      `update the article with pi_canon; if nothing durable changed, leave it.`
+      `update the article with canon; if nothing durable changed, leave it.`
     );
   }
 }

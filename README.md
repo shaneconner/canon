@@ -4,7 +4,7 @@ Canonical project memory for the [Pi coding agent](https://pi.dev). Every asset 
 
 **One setup measured, others welcome.** pi-canon was developed and tested under one configuration: Codex, with GPT 5.6 as the worker model, on an OpenAI subscription. Every number in this README was measured there. Other models, other providers, and API-metered access are untested. If you run it under a different setup, feedback is welcome and so are pull requests.
 
-![The store drawn as a graph, articles tethered to the assets they govern](https://raw.githubusercontent.com/shaneconner/pi-canon/main/docs/assets/pi-canon-constellation.gif)
+![The store drawn as a graph, articles tethered to the assets they govern](https://raw.githubusercontent.com/shaneconner/canon/main/docs/assets/pi-canon-constellation.gif)
 
 *An illustrative store: 33 articles, 20 journal entries, 40 files. Discs are articles, rings are journal entries hanging under the article each was distilled into, and a square tethered beneath a disc is the asset that article was named for. Six of the articles match no asset and hang untethered, because free knowledge is not a special case here. Selecting a node opens what it holds, what it points at, and what points at it.*
 
@@ -23,24 +23,24 @@ Or clone this repo into `~/.pi/agent/extensions/`. Node 22.18 or later, Pi 0.83 
 The repository is a Codex marketplace. Add it once, then install the plugin at user scope:
 
 ```sh
-codex plugin marketplace add shaneconner/pi-canon
-codex plugin add pi-canon@pi-canon
+codex plugin marketplace add shaneconner/canon
+codex plugin add canon@canon
 ```
 
-For a local checkout under development, replace `shaneconner/pi-canon` with its absolute path. Start a new Codex thread after installing or updating it.
+For a local checkout under development, replace `shaneconner/canon` with its absolute path. Start a new Codex thread after installing or updating it.
 
 ### Claude Code
 
 The same repository is also a Claude Code marketplace:
 
 ```sh
-claude plugin marketplace add shaneconner/pi-canon --scope user
-claude plugin install pi-canon@pi-canon --scope user
+claude plugin marketplace add shaneconner/canon --scope user
+claude plugin install canon@canon --scope user
 ```
 
 Again, an absolute checkout path works for local development. Start a new Claude Code session after installing or updating it.
 
-Both plugins launch the same dependency-free MCP server and expose the same `pi_canon` actions as Pi. Codex surfaces after each tool result. Claude Code deduplicates one capsule packet across each parallel tool batch, immediately before the next model request, which avoids repeated message framing without delaying the agent's next decision. Both give one write-after reminder before the agent stops. An article surfaces at most once per compaction cycle: a compact starts a new cycle, while resuming the same uncompacted session does not. One session may contain several compaction cycles. Compaction discards prior touch state and replays nothing. After it, only a fresh tool-input path can surface that asset's exact or nearest-ancestor article; children and unrelated articles do not ride along. The hooks are inert in projects without `.canon/articles`, and they never create a store merely because a session opened. Review and approve the plugin hooks when the client asks. Journal entries written through the MCP server carry explicit `harness` provenance and a session identifier when the client exposes one.
+Both plugins launch the same dependency-free MCP server and expose the same `canon` actions as Pi. Codex surfaces after each tool result. Claude Code deduplicates one capsule packet across each parallel tool batch, immediately before the next model request, which avoids repeated message framing without delaying the agent's next decision. Both give one write-after reminder before the agent stops. An article surfaces at most once per compaction cycle: a compact starts a new cycle, while resuming the same uncompacted session does not. One session may contain several compaction cycles. Compaction discards prior touch state and replays nothing. After it, only a fresh tool-input path can surface that asset's exact or nearest-ancestor article; children and unrelated articles do not ride along. The hooks are inert in projects without `.canon/articles`, and they never create a store merely because a session opened. Review and approve the plugin hooks when the client asks. Journal entries written through the MCP server carry explicit `harness` provenance and a session identifier when the client exposes one.
 
 ## Defaults
 
@@ -139,13 +139,13 @@ Such an article may say so, with `scope: rule` on the write. Forgetting the decl
 
 ## The tool
 
-One tool, `pi_canon`, five actions: `read`, `write`, `journal`, `map`, and `search`.
+One tool, `canon`, five actions: `read`, `write`, `journal`, `map`, and `search`.
 
 | action | parameters | does |
 |---|---|---|
 | `read` | `path` | Returns the governing article: title, `capsule`, `updated`, body, and a one-line journal index. A miss returns a sentence naming the address and inviting a write after the task. When an ancestor answers, the title reads `<ancestor> governs <address>`, so the altitude is visible. |
 | `write` | `path`, `capsule`, `body`, `scope` | Creates or updates the article, then returns `Wrote <address>.` and any advisory lint. Never refuses. An empty string means untouched, not erase. A write identical to the stored article is reported as already current and touches nothing, so `updated` keeps meaning the date the content last changed. |
-| `journal` | `body`, `subject`, `slug` | Appends a dated entry as its own file, `<date>-<slug>[-n].md`. pi_canon can never rewrite one. An empty body gets a sentence back asking what happened. |
+| `journal` | `body`, `subject`, `slug` | Appends a dated entry as its own file, `<date>-<slug>[-n].md`. canon can never rewrite one. An empty body gets a sentence back asking what happened. |
 | `map` | `path` (optional prefix) | One line per article as `address: capsule`, or a sentence when the store or the filter is empty. Output is unbounded. |
 | `search` | `query`, `journal` | Ranks articles against the words, ten results, each carrying what scopes it: an article its address and capsule. The journal is opt-in via `journal: true`, because events are history rather than current truth, and measured on real stores journal entries about an event crowd out the article carrying it; a default search never reads an entry body and says the journal exists. Opted in, journal entries are first class results scoped by instant and subjects, articles keep half the window, and a short side cedes its slots. Says how many matches the cap dropped. The one action that reaches the journal's content. |
 
@@ -206,7 +206,7 @@ A tool call stages the governing article for whatever it touched and sends nothi
 
 No character count decides any of this. A capsule is written to fit 1,000 characters, and that is a target handed to the agent at write time, not a gate at read time: an article whose governing asset a turn touched surfaces whole or does not surface. Earlier versions charged capsule text against a session allowance and degraded the overflow to bare pointers. That allowance was removed in 2.0. It was a constant guessing at a policy nobody had measured, and what it decided was how much an agent got to see. What stands in its place is measurement: every surfaced line records what it cost the window, so context taken can be read against relevance afterwards instead of a constant ruling on it in advance. The one remaining reason a line is not capsule text is an article that has no capsule, which surfaces as a pointer naming the address and telling the agent to read it.
 
-Reading an article through `pi_canon` withdraws the line staged for it before the message goes out, so pull preempts push. Reading the asset file itself does not, because reading a file is not reading what is known about it, and the capsule may hold exactly the constraint the file does not contain. A read-only session exits quietly. After a successful write, edit, patch, or recognized mutating shell call names a governed asset, settling draws one reminder for its article if the article was not updated, once per batch and re-armed by the next modifying call. Unknown tools still surface knowledge when they name a path, but do not invent an update obligation without positive mutation evidence.
+Reading an article through `canon` withdraws the line staged for it before the message goes out, so pull preempts push. Reading the asset file itself does not, because reading a file is not reading what is known about it, and the capsule may hold exactly the constraint the file does not contain. A read-only session exits quietly. After a successful write, edit, patch, or recognized mutating shell call names a governed asset, settling draws one reminder for its article if the article was not updated, once per batch and re-armed by the next modifying call. Unknown tools still surface knowledge when they name a path, but do not invent an update obligation without positive mutation evidence.
 
 Finding a path in a tool call is best effort. Only the input of a tool call is scanned. Results are never scanned, and neither is the model's prose. Inputs are scanned for whole short strings and path-shaped tokens that exist on disk or whose parent directory does, so a file about to be created still surfaces its governing ancestor, and a path with a space inside a longer string is missed. What that feeds, resolution from a path to a governing article, is deterministic. The two claims stay separate on purpose.
 
@@ -230,7 +230,7 @@ Six keys, and any other throws at registration by name, because everything else 
 The four behavior keys (`surface`, `resurface`, `retrieval`, `standout`) can also come from `~/.config/pi-canon/settings.json`, which the `/canon-settings` command edits from inside the TUI: booleans and retrieval cycle, the standout cutoff steps along its lattice with left/right and takes an exact value on Enter, and every applied change saves immediately through the same validation registration uses. Explicit options win over the file. `root` and `mounts` are per-project topology and stay code-only; they have no row in the editor and no place in the file.
 
 - **`root`** places the store. Absolute is used as given, relative joins the project cwd. Default `<project>/.canon`.
-- **`surface: false`** silences the per-turn flush and the settle reminder. The `pi_canon` tool and `/pi-canon` stay registered and working.
+- **`surface: false`** silences the per-turn flush and the settle reminder. The `canon` tool and `/pi-canon` stay registered and working.
 - **`resurface: false`** returns an article to surfacing at most once per session however long ago it left the window. The default is `true`: an article with a presence mark counts as seen only while that mark remains in the context the provider receives, so one folded or compacted away surfaces again the next time its asset is touched. Text shorter than 24 normalized characters has no safe mark and conservatively retains the once-per-session behavior. A fresh touch is what brings a marked article back, so nothing re-surfaces on its own.
 - **`retrieval`** ranks the retrieval corpus against what the agent is doing: every off-spine article, plus any article declared `scope: rule` so a rule stays reachable if an asset later appears at its address. Ordinary asset-scoped articles stay out because the address spine already reaches them. The default is `"none"`, which ranks and surfaces nothing by relevance: the spine alone, exactly as 1.0. `"lexical"` is BM25 over the standard library, no dependency and no model. Anything that needs a model is supplied here as `{ name, score, index? }`, so this package never carries one and never decides which you run. With a retriever configured the tool's filing rule changes with it, because the advice costs knowledge in either direction. On the default it says knowledge filed off the asset path never surfaces, which is true and is why you should not file it there. With a retriever it says the opposite: a constraint governing many assets and owning none belongs at its own address naming the rule, because the only parent unrelated packages share is the root and a root article surfaces on every touch of anything.
 
@@ -251,7 +251,7 @@ An immutable journal, an addressing spine, and recall that arrives unasked could
 
 Held by the runtime:
 
-- A journal entry is created with the exclusive-create flag, so pi_canon never rewrites or deletes one, and a name collision increments a suffix rather than losing an entry. The files stay ordinary Markdown, so any other tool can still rewrite or delete one: append-only is a property of the tool, not of the filesystem.
+- A journal entry is created with the exclusive-create flag, so canon never rewrites or deletes one, and a name collision increments a suffix rather than losing an entry. The files stay ordinary Markdown, so any other tool can still rewrite or delete one: append-only is a property of the tool, not of the filesystem.
 - Once a path is in hand it resolves to exactly one article, walking to the nearest ancestor that has one, or to nothing at all.
 - An article surfaces whole, with no character count able to truncate it or hold it back.
 - An article with a presence mark surfaces at most once while that mark remains in the context the provider receives. Presence is read from that projection rather than remembered, so folding or compaction returns a marked article to surfacing; an untestably short delivery or a harness that reports no projection degrades to at most once per session.

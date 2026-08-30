@@ -124,7 +124,7 @@ function mutateState(file, mutate) {
 
 function ownTool(name) {
   const value = String(name ?? "");
-  return value === "pi_canon" || (value.includes("pi-canon") && value.endsWith("pi_canon"));
+  return value === "canon" || value.endsWith("__canon");
 }
 
 function toolCalls(input, event) {
@@ -144,7 +144,7 @@ function afterTools(input, event, cwd, file) {
     const staged = [];
 
     /* A full article read anywhere in a parallel batch makes its capsule redundant.
-       Process pi_canon calls first, then collect the assets touched by every other call. */
+       Process canon calls first, then collect the assets touched by every other call. */
     for (const call of calls.filter((candidate) => ownTool(candidate?.tool_name))) {
       const toolInput = call?.tool_input ?? {};
       const article = articleFor(store, cwd, toolInput.path);
@@ -158,7 +158,7 @@ function afterTools(input, event, cwd, file) {
         const article = store.resolve(asset, cwd);
         if (!article) continue;
         /* Always take the article's current fingerprint for a new modifying call. If an
-           unobservable nested pi_canon write satisfied an earlier obligation, a later edit
+           unobservable nested canon write satisfied an earlier obligation, a later edit
            must start a new obligation from the updated article rather than inheriting the
            old baseline. */
         if (changed) pending.set(article.path, articleFingerprint(article));
@@ -177,7 +177,7 @@ function afterTools(input, event, cwd, file) {
     const source = event === "PostToolBatch" ? "this tool batch" : "this tool";
     return (
       `[pi-canon] Governing article${plural} for what ${source} touched. Read the full article with `
-      + `pi_canon before depending on details; update it after real changes.\n${staged.join("\n")}`
+      + `canon before depending on details; update it after real changes.\n${staged.join("\n")}`
     );
   });
 }
@@ -210,7 +210,7 @@ function stop(file, cwd) {
     if (!stale.length) return undefined;
     return (
       `[pi-canon] Touched but not updated: ${stale.join(", ")}. If this work changed what is true, `
-      + "update the article with pi_canon; if nothing durable changed, leave it."
+      + "update the article with canon; if nothing durable changed, leave it."
     );
   });
 }

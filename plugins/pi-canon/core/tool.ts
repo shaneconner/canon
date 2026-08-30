@@ -1,4 +1,4 @@
-/* The pi_canon tool: one tool, five verbs. Read and update over create; the journal
+/* The canon tool: one tool, five verbs. Read and update over create; the journal
    for events; map to orient; search when the agent asks. */
 
 import { existsSync } from "node:fs";
@@ -107,8 +107,8 @@ function settle(mount: Mount, raw: string, cwd: string): string {
 
 export function buildCanonTool(ready: (ctx: unknown) => CanonRuntime, retrieval = "none") {
   return {
-    name: "pi_canon",
-    label: "pi-canon",
+    name: "canon",
+    label: "canon",
     description: canonToolDescription(retrieval),
     parameters: CANON_TOOL_PARAMETERS,
     async execute(
