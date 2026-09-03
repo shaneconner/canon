@@ -303,13 +303,13 @@ trap cells to the floor's 8, and answered recall audits at about a third of the
 floor's median token cost. Recall accuracy itself was a wash across arms, and a
 static doctrine file was cheaper on both metered measures while passing three
 fewer trap cells. Full tables, the arms, and the limitations are in
-[RESULTS.md](https://github.com/shaneconner/canon-bench/blob/main/RESULTS.md).
+[RESULTS.md](https://github.com/shaneconner/canon-bench/blob/main/studies/pi-canon/RESULTS.md).
 
 That study's forensic pass is what set the current research direction: of
 fourteen recall misses, thirteen first went wrong at the write desk (never
 captured, or captured and later overwritten) and none at retrieval. The
 write-side programme that followed is in
-[write-desk/](https://github.com/shaneconner/canon-bench/tree/main/write-desk),
+[write-desk/](https://github.com/shaneconner/canon-bench/tree/main/studies/pi-canon/write-desk),
 and it is where the growth line documented above comes from: two arms over
 byte-identical eight-session histories, where the arm whose tool names article
 growth ended with fewer superseded values standing in all three captures. The
