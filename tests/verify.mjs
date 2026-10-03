@@ -1879,6 +1879,14 @@ const claudeMcp = JSON.parse(readFileSync(join(pluginRoot, ".mcp.json"), "utf8")
 assert.equal(claudeMcp.mcpServers["canon"].args[0],
   "${CLAUDE_PLUGIN_ROOT}/scripts/pi-canon-mcp.mjs");
 assert.equal(claudeMcp.mcpServers["canon"].env.PI_CANON_CALLER, "claude-code");
+
+/* --- one version across every file that states it -------------------------------- */
+
+const citation = readFileSync(join(projectRoot, "CITATION.cff"), "utf8");
+const citationVersion = citation.match(/^version:\s*(\S+)/m)?.[1];
+assert.equal(citationVersion, packageManifest.version,
+  `CITATION.cff says ${citationVersion}, package.json says ${packageManifest.version}`);
+pass("every file that states the version states the same one");
 assert.equal("hooks" in codexPlugin, false, "Codex auto-discovers its standard hook file once");
 assert.equal(claudePlugin.hooks, "./hooks/claude.json");
 const codexHooks = JSON.parse(readFileSync(join(pluginRoot, "hooks/hooks.json"), "utf8"));

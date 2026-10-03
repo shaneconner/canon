@@ -1,6 +1,6 @@
 {
   "name": "canon",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Canonical project memory with one article per asset, an append-only journal, and capsule surfacing on touch.",
   "author": {
     "name": "Shane Conner",
